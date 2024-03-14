@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "google-maps-scraper"
+version = "0.1.0"
+description = ""
+authors = ["eliagonzalezmolina <elia.gonzalez.molina@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+pre-commit = "^3.6.2"
+unidecode = "^1.3.8"
+geonamescache = "^2.0.0"
+dateutils = "^0.6.12"
+casefy = "^0.1.7"
+lxml = "^5.1.0"
+botasaurus = "^3.2.27"
+regex = "^2023.12.25"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

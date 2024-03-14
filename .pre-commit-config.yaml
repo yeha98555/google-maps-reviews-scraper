@@ -1,0 +1,27 @@
+repos:
+-   repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+    -   id: check-yaml  # Checks YAML files for syntax errors.
+    -   id: end-of-file-fixer # Adds an end-of-file marker to files missing one.
+    -   id: trailing-whitespace # Removes trailing whitespace from files.
+    -   id: check-added-large-files  # Prevents committing large files.
+-   repo: https://github.com/pycqa/isort
+    rev: 5.13.2
+    hooks:
+      -  id: isort  # Sorts and organizes Python imports.
+         args: ["--profile", "black"]
+-   repo: https://github.com/psf/black
+    rev: 24.2.0
+    hooks:
+    -   id: black # Formats Python code to follow PEP 8 style guidelines.
+-   repo: https://github.com/PyCQA/flake8
+    rev: 7.0.0
+    hooks:
+      -  id: flake8  # Lints Python code to detect violations of PEP 8 style guidelines.
+         entry: flake8 --ignore=E203 --max-line-length=88 # This is to avoid chasing with black
+-   repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.8.0
+    hooks:
+      -  id: mypy  # Performs static type checking for Python code.
+         entry: mypy --disable-error-code=import-untyped # This is done because no version of types-requests is compatible
