@@ -14,16 +14,32 @@ To use the tool, you must have Node.js 16+ (https://nodejs.org/) and Python inst
 
 Let's get started by following these super simple steps:
 
-1️⃣ Install Dependencies 📦:
+1️⃣ Install Dependencies:
 ```shell
 make install
 ```
-2️⃣ Get the results by running 😎:
+2️⃣ Get the results by running:
 ```shell
 make run
 ```
+Remember to add your params in `params.yaml` file.
+
+3️⃣ Clean repo:
+```shell
+make clean
+```
+4️⃣ Clean repo **and results**:
+```shell
+make clean_all
+```
+5️⃣ Run pre-commits:
+```shell
+make pre-commit
+```
 
 Once the scraping process is complete, you will find the search results in the `output` directory.
+
+⚠️ Many times Cookies can't be accepted and `Exception: Unable to consent Cookies` is raised. Try again with a lower `max` param.
 
 ## 🤔 Questions
 

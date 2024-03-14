@@ -1,3 +1,4 @@
+import logging
 from hashlib import md5
 from time import sleep, time
 from typing import Any, List
@@ -61,6 +62,7 @@ def process_reviews(reviews, convert_to_english):
     output=None,
 )
 def scrape_reviews(requests: AntiDetectRequests, data):
+
     place_id = data["place_id"]
     link = data["link"]
 
@@ -69,6 +71,8 @@ def scrape_reviews(requests: AntiDetectRequests, data):
     reviews_sort = data["reviews_sort"]
     lang = data["lang"]
     convert_to_english = data["convert_to_english"]
+
+    logging.info(f"Scrapping reviews for place_id: {place_id}")
 
     processed = []
     with GoogleMapsAPIScraper() as scraper:

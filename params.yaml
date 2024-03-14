@@ -1,6 +1,7 @@
 # config.yaml
 queries:
-  - "restaurantes en Tarragona"
+  - "restaurantes en Barcelona"
 max: 1
 scrape_reviews: true
-reviews_max: 3 # None
+reviews_max: None
+lang: "es"

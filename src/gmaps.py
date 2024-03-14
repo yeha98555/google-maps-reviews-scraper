@@ -41,7 +41,7 @@ def create_reviews_data(places, reviews_max, reviews_sort, convert_to_english, l
 
     for place in places:
         n_reviews = place["reviews"]
-        if reviews_max is None:
+        if reviews_max == "None":
             max_r = n_reviews
         else:
             max_r = min(reviews_max, n_reviews)
@@ -119,7 +119,6 @@ def process_result(
 ):
     places = places_obj["places"]
     query = places_obj["query"]
-    # Sort and Filter TODO: do later
     filter_data = {
         "min_rating": min_rating,
         "max_rating": max_rating,
@@ -218,7 +217,7 @@ class Gmaps:
         convert_to_english: bool = False,
         use_cache: bool = True,
         scrape_reviews: bool = False,
-        reviews_max: int = ALL_REVIEWS,
+        reviews_max: Optional[int] = ALL_REVIEWS,
         reviews_sort: str = NEWEST,
         fields: Optional[Union[str, List[str]]] = DEFAULT_FIELDS,
         lang: Optional[str] = None,
