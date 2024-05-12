@@ -117,3 +117,6 @@ local_storage.json
 error_logs/
 
 profiles.json
+
+# key file
+*_key*.json
