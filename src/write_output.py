@@ -439,11 +439,9 @@ def format(query_kebab, type, name):
     return f"{name}-of-{query_kebab}.{type}"
 
 
-def create(places, selected_fields, csv_path, json_path, query_kebab):
+def create(places, selected_fields, csv_path, query_kebab):
 
     written = []
-    places_json = json_path + format(query_kebab, "json", "places")
-    create_places_json(places_json, places, selected_fields)
 
     if can_create_places_csv(selected_fields):
         places_path_csv = csv_path + format(query_kebab, "csv", "places")
@@ -467,8 +465,6 @@ def create(places, selected_fields, csv_path, json_path, query_kebab):
         written.append(new_var)
         create_images_csv(new_var, places, selected_fields)
 
-    written.append(places_json)
-
     print_filenames(written)
 
 
@@ -478,6 +474,5 @@ def write_output(query, places, selected_fields):
     make_folders(query_kebab)
 
     csv_path = f"output/{query_kebab}/csv/"
-    json_path = f"output/{query_kebab}/json/"
 
-    create(places, selected_fields, csv_path, json_path, query_kebab)
+    create(places, selected_fields, csv_path, query_kebab)
