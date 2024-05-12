@@ -151,9 +151,6 @@ def process_result(
         ls.append(place)
     cleaned_places = ls
 
-    # 4. Write Output
-    write_output(query, cleaned_places, fields)
-
     result_item = {"query": query, "places": cleaned_places}
     return result_item
 
