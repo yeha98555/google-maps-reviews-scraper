@@ -1,5 +1,9 @@
 output/
 build/
+cache/
+profiles/
+local_storage.json
+*key*.json
 __pycache__/
 .git/
 .gitignore
