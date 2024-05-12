@@ -8,7 +8,6 @@ from src.utils import kebab_case, sort_dict_by_keys, unicode_to_ascii
 
 def make_folders(query_kebab):
     create_directory_if_not_exists(f"output/{query_kebab}/")
-    create_directory_if_not_exists(f"output/{query_kebab}/json/")
     create_directory_if_not_exists(f"output/{query_kebab}/csv/")
     pass
 
