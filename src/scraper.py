@@ -32,10 +32,11 @@ def process_reviews(reviews, convert_to_english):
         lk = review.get("likes")
         processed_review = {
             "review_id_hash": md5(review.get("review_id").encode("utf-8")).hexdigest(),
+            "review_id": review.get("review_id"),
             "rating": int(review.get("rating")),
             "review_text": review.get("text"),
             "published_at": review.get("relative_date"),
-            "published_at_date": review.get("text_date"),
+            # "published_at_date": review.get("text_date"),
             "response_from_owner_text": review.get("response_text"),
             "response_from_owner_ago": review.get("response_relative_date"),
             "response_from_owner_date": review.get("response_text_date"),
@@ -43,11 +44,11 @@ def process_reviews(reviews, convert_to_english):
             "total_number_of_reviews_by_reviewer": n_of_reviews_by_reviewer,
             "total_number_of_photos_by_reviewer": number_of_photos_by_reviewer,
             "is_local_guide": review.get("user_is_local_guide"),
-            "review_translated_text": review.get("translated_text"),
-            "response_from_owner_translated_text": review.get(
-                "translated_response_text"
-            ),
-            # "extracted_at": review.get("retrieval_date")
+            # "review_translated_text": review.get("translated_text"),
+            # "response_from_owner_translated_text": review.get(
+            #     "translated_response_text"
+            # ),
+            "extracted_at": review.get("retrieval_date")
         }
         processed_reviews.append(processed_review)
 
