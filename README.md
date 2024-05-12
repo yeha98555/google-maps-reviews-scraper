@@ -1,6 +1,6 @@
 # Google Maps Scraper
 
-Update `params.yaml` file with your params. Run and get Google Maps Places and Reviews.
+Update `params.yaml` file with your params. Run and get Google Maps Places and Reviews. And Upload to GCS.
 
 ## Usage
 
