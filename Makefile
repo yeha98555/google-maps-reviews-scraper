@@ -1,8 +1,5 @@
 install:
 	poetry install --no-root
-	pre-commit install
-pre-commit:
-	pre-commit run --all-files
 run:
 	poetry run python main.py
 clean:
