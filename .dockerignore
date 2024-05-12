@@ -1,0 +1,7 @@
+output/
+build/
+__pycache__/
+.git/
+.gitignore
+Dockerfile
+.dockerignore
