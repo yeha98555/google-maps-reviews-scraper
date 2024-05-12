@@ -201,6 +201,8 @@ class Gmaps:
     @staticmethod
     def places(
         queries: List[str],
+        bucket_name: str,
+        blob_name: str,
         min_reviews: Optional[int] = None,
         max_reviews: Optional[int] = None,
         is_spending_on_ads: Optional[bool] = False,
@@ -289,7 +291,8 @@ class Gmaps:
             result.append(result_item)
 
         all_places = sort_places(merge_places(result), sort)
-        write_output("all", all_places, fields)
+
+        write_output(bucket_name, blob_name, all_places, fields)
 
         scraper.scrape_places.close()
         return result
