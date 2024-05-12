@@ -1,5 +1,7 @@
 # Google Maps Scraper
 
+Update `params.yaml` file with your params. Run and get Google Maps Places and Reviews.
+
 ## Usage
 
 ### Use in local
