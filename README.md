@@ -50,9 +50,14 @@ docker run -it --rm \
 
 ### Use in Airflow
 
-1. Set Docker Proxy in Airflow docker-compose
+1. Build Docker Image
+```sh
+docker build -t gmaps-scraper .
+```
 
-2. Add DockerOperator to your DAG
+2. Set Docker Proxy in Airflow docker-compose
+
+3. Add DockerOperator to your DAG
 ```py
 run_scraper = DockerOperator(
     task_id="e_gmaps-scraper",
