@@ -1,3 +1,4 @@
+import os
 from botasaurus import bt
 from botasaurus.decorators import print_filenames
 from botasaurus.decorators_utils import create_directory_if_not_exists
@@ -5,6 +6,11 @@ from botasaurus.decorators_utils import create_directory_if_not_exists
 from src.fields import Fields
 from src.utils import kebab_case, sort_dict_by_keys, unicode_to_ascii
 
+import pandas as pd
+import io
+from google.cloud import storage
+
+STORAGE_CLIENT = storage.Client()
 
 def make_folders(query_kebab):
     create_directory_if_not_exists(f"output/{query_kebab}/")
@@ -43,7 +49,7 @@ def transform_about(about_list):
 
 
 def featured_question_to_string(data):
-    # Check if the data is a dictionary
+    # Check if the data is a dictionarystorage_client
     if isinstance(data, dict):
         # Extracting required fields
         question = data.get("question", "No Question")
@@ -272,6 +278,27 @@ def transform_places(places, fields):
 
     return transformed_places
 
+def upload_parquet_to_gcs(data, bucket_name, dest_blob_name) -> None:
+    """
+    Uploads a parquet file to a bucket.
+
+    Args:
+        data: The data to upload.
+        bucket_name: The name of the bucket to upload to.
+        destination_blob_name: The name of the blob to upload to.
+    """
+    df = pd.DataFrame(data)
+
+    parquet_buffer = io.BytesIO()
+    df.to_parquet(parquet_buffer, index=False)
+
+    bucket = STORAGE_CLIENT.bucket(bucket_name)
+    blob = bucket.blob(dest_blob_name)
+
+    parquet_buffer.seek(0)
+
+    blob.upload_from_file(parquet_buffer, content_type='application/octet-stream')
+    print(f"File uploaded to {dest_blob_name} in bucket {bucket_name}.")
 
 def create_places_csv(path, places, fields):
     data = transform_places(places, fields)
@@ -437,40 +464,40 @@ def format(query_kebab, type, name):
     return f"{name}-of-{query_kebab}.{type}"
 
 
-def create(places, selected_fields, csv_path, query_kebab):
+def create(bucket_name, blob_name, places, selected_fields):
+    parquet_path = f"{blob_name}/"
 
     written = []
 
     if can_create_places_csv(selected_fields):
-        places_path_csv = csv_path + format(query_kebab, "csv", "places")
-        written.append(places_path_csv)
-        create_places_csv(places_path_csv, places, selected_fields)
+        # 1. Create places.parquet
+        places_path_parquet = os.path.join(parquet_path, "places.parquet")
+        written.append(places_path_parquet)
+        data = transform_places(places, selected_fields)
+        upload_parquet_to_gcs(data, bucket_name, places_path_parquet)
 
-        detailed_reviews_path = csv_path + format(
-            query_kebab, "csv", "detailed-reviews"
-        )
-
+        # 2. Create detailed-reviews.parquet
+        detailed_reviews_path = os.path.join(parquet_path, "detailed-reviews.parquet")
         written.append(detailed_reviews_path)
-        create_detailed_reviews_csv(detailed_reviews_path, places, selected_fields)
+        data = transform_detailed_reviews(places)
+        upload_parquet_to_gcs(data, bucket_name, detailed_reviews_path)
 
+    # 3. Create featured-reviews.parquet
     if can_create_featured_reviews_csv(selected_fields):
-        new_var1 = csv_path + format(query_kebab, "csv", "featured-reviews")
+        new_var1 = os.path.join(parquet_path, "featured-reviews.parquet")
         written.append(new_var1)
-        create_featured_reviews_csv(new_var1, places, selected_fields)
+        data = transform_featured_reviews_csv(places)
+        upload_parquet_to_gcs(data, bucket_name, new_var1)
 
+    # 4. Create images.parquet
     if can_create_images_csv(selected_fields):
-        new_var = csv_path + format(query_kebab, "csv", "images")
+        new_var = os.path.join(parquet_path, "images.parquet")
         written.append(new_var)
-        create_images_csv(new_var, places, selected_fields)
+        data = transform_images_csv(places, selected_fields)
+        upload_parquet_to_gcs(data, bucket_name, new_var)
 
     print_filenames(written)
 
 
-def write_output(query, places, selected_fields):
-
-    query_kebab = kebab_case(query)
-    make_folders(query_kebab)
-
-    csv_path = f"output/{query_kebab}/csv/"
-
-    create(places, selected_fields, csv_path, query_kebab)
+def write_output(bucket_name, blob_name, places, selected_fields):
+    create(bucket_name, blob_name, places, selected_fields)
