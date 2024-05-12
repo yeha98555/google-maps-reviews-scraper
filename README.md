@@ -77,3 +77,9 @@ run_scraper = DockerOperator(
     network_mode="bridge",
 )
 ```
+
+## Reference
+
+- [GitHub - google-maps-scraper](https://github.com/omkarcloud/google-maps-scraper/tree/master)
+- [How to run dbt core from an Airflow pipeline using the DockerOperator](https://medium.com/@tdonizeti/how-to-run-dbt-core-from-an-airflow-pipeline-using-the-dockeroperator-e48cf215e9f6)
+- [Airflow + Dockeroperator unable to pass mounts / volumes using mounts parameter](https://stackoverflow.com/questions/73106669/airflow-dockeroperator-unable-to-pass-mounts-volumes-using-mounts-parameter)
