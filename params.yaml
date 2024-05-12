@@ -1,7 +1,16 @@
 # config.yaml
 queries:
-  - "restaurantes en Barcelona"
+  - "士林官邸公園"
+  - "中正紀念堂"
+  - "台北101購物中心"
+  - "台灣科學教育館"
+  - "松山文創園區"
+  - "故宮博物館"
+  - "國立國父紀念館"
+  - "華山1914文化創意產業園區"
+  - "臺北市立兒童新樂園"
+  - "臺北市立動物園"
 max: 1
 scrape_reviews: true
 reviews_max: None
-lang: "es"
+lang: "zh-TW"
