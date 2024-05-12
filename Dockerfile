@@ -21,3 +21,5 @@ RUN make install
 # # RUN
 # RUN make run
 
+# Bash
+CMD ["bash"]
