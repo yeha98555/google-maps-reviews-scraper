@@ -1,4 +1,6 @@
 import os
+from datetime import datetime
+
 from botasaurus import bt
 from botasaurus.decorators import print_filenames
 from botasaurus.decorators_utils import create_directory_if_not_exists
@@ -460,33 +462,33 @@ def format(query_kebab, type, name):
 
 
 def create(bucket_name, blob_name, places, selected_fields):
-    parquet_path = f"{blob_name}/"
+    current_date = datetime.now().strftime("%Y-%m-%d")
 
     written = []
 
     if can_create_places_csv(selected_fields):
         # 1. Create places.parquet
-        places_path_parquet = os.path.join(parquet_path, "places.parquet")
+        places_path_parquet = os.path.join(blob_name, "places", f"{current_date}.parquet")
         written.append(places_path_parquet)
         data = transform_places(places, selected_fields)
         upload_parquet_to_gcs(data, bucket_name, places_path_parquet)
 
         # 2. Create detailed-reviews.parquet
-        detailed_reviews_path = os.path.join(parquet_path, "detailed-reviews.parquet")
+        detailed_reviews_path = os.path.join(blob_name, "detailed-reviews", f"{current_date}.parquet")
         written.append(detailed_reviews_path)
         data = transform_detailed_reviews(places)
         upload_parquet_to_gcs(data, bucket_name, detailed_reviews_path)
 
     # 3. Create featured-reviews.parquet
     if can_create_featured_reviews_csv(selected_fields):
-        new_var1 = os.path.join(parquet_path, "featured-reviews.parquet")
+        new_var1 = os.path.join(blob_name, "featured-reviews", f"{current_date}.parquet")
         written.append(new_var1)
         data = transform_featured_reviews_csv(places)
         upload_parquet_to_gcs(data, bucket_name, new_var1)
 
     # 4. Create images.parquet
     if can_create_images_csv(selected_fields):
-        new_var = os.path.join(parquet_path, "images.parquet")
+        new_var = os.path.join(blob_name, "images", f"{current_date}.parquet")
         written.append(new_var)
         data = transform_images_csv(places, selected_fields)
         upload_parquet_to_gcs(data, bucket_name, new_var)
