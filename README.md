@@ -87,6 +87,14 @@ run_scraper = DockerOperator(
 )
 ```
 
+## TODO
+- [x] Upload to GCS
+- [x] Pack as Docker Image
+- [x] Run in Airflow
+- [ ] Get more detailed Google Maps Places info
+- [ ] Filter time to get Google Maps Reviews
+
+
 ## Reference
 
 - [GitHub - google-maps-scraper](https://github.com/omkarcloud/google-maps-scraper/tree/master)
