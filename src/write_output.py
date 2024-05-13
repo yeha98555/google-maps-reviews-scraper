@@ -12,11 +12,6 @@ from google.cloud import storage
 
 STORAGE_CLIENT = storage.Client()
 
-def make_folders(query_kebab):
-    create_directory_if_not_exists(f"output/{query_kebab}/")
-    create_directory_if_not_exists(f"output/{query_kebab}/csv/")
-
-
 def can_create_places_csv(selected_fields):
     return True
 
