@@ -43,7 +43,9 @@ def process_reviews(reviews, convert_to_english):
             "review_likes_count": 0 if lk == -1 else lk,
             "total_number_of_reviews_by_reviewer": n_of_reviews_by_reviewer,
             "total_number_of_photos_by_reviewer": number_of_photos_by_reviewer,
-            "is_local_guide": review.get("user_is_local_guide"),
+            "user_name": review.get("user_name"),
+            "user_is_local_guide": review.get("user_is_local_guide"),
+            "user_url": review.get("user_url"),
             # "review_translated_text": review.get("translated_text"),
             # "response_from_owner_translated_text": review.get(
             #     "translated_response_text"
