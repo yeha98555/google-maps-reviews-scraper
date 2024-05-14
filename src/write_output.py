@@ -149,133 +149,16 @@ def transform_places(places, fields):
     transformed_places = []
 
     for place in places:
-        transformed_place = {}
+        transformed_place = place.copy()
 
-        for field in fields:
-            if field == Fields.REVIEWS_PER_RATING:
-                # Transforming reviews_per_rating
-                for key, value in place["reviews_per_rating"].items():
-                    transformed_place[f"reviews_per_rating_{key}"] = value
-
-            elif field == Fields.MENU:
-                # Adding menu link
-                transformed_place["menu_link"] = (
-                    place["menu"]["link"]
-                    if "menu" in place and "link" in place["menu"]
-                    else None
-                )
-
-            elif field == Fields.FEATURED_QUESTION:
-                transformed_place[Fields.FEATURED_QUESTION] = (
-                    featured_question_to_string(place[Fields.FEATURED_QUESTION])
-                )
-
-            elif field == Fields.COMPETITORS:
-                transformed_place[Fields.COMPETITORS] = competitors_to_string(
-                    place[Fields.COMPETITORS]
-                )
-
-            elif field == Fields.POPULAR_TIMES:
-                transformed_place[Fields.POPULAR_TIMES] = popular_times_to_string(
-                    place[Fields.POPULAR_TIMES]
-                )
-
-            elif field == Fields.MOST_POPULAR_TIMES:
-                transformed_place[Fields.MOST_POPULAR_TIMES] = (
-                    most_popular_times_to_string(place[Fields.MOST_POPULAR_TIMES])
-                )
-
-            elif field == Fields.ORDER_ONLINE_LINKS:
-                # Concatenating online links
-                links = "\n".join(
-                    [link["link"] for link in place["order_online_links"]]
-                )
-                transformed_place[Fields.ORDER_ONLINE_LINKS] = links
-
-            elif field == Fields.RESERVATIONS:
-                # Concatenating reservation links
-                links = "\n".join([link["link"] for link in place["reservations"]])
-                transformed_place[Fields.RESERVATIONS] = links
-
-            elif field == Fields.OWNER:
-                # Adding owner name and profile link
-                transformed_place["owner_name"] = place["owner"]["name"]
-                transformed_place["owner_profile_link"] = place["owner"]["link"]
-
-            elif field == Fields.EMAILS:
-                emails = place.get("emails", [])
-                transformed_place[Fields.EMAILS] = ", ".join(emails)
-
-            elif field == Fields.PHONES:
-                phones = place.get("phones", [])
-                transformed_place[Fields.PHONES] = ", ".join(phones)
-
-            elif field == Fields.CATEGORIES:
-                # Concatenating categories
-                categories = ", ".join(place[Fields.CATEGORIES] or [])
-                transformed_place[Fields.CATEGORIES] = categories
-            elif field == Fields.REVIEW_KEYWORDS:
-                # Concatenating review_keywords
-                review_keywords = ", ".join(
-                    [kw["keyword"] for kw in place[Fields.REVIEW_KEYWORDS]]
-                )
-                transformed_place[Fields.REVIEW_KEYWORDS] = review_keywords
-
-            elif field == Fields.COORDINATES:
-                # Formatting coordinates
-                coords = (
-                    f"{place[Fields.COORDINATES]['latitude']},"
-                    f"{place[Fields.COORDINATES]['longitude']}"
-                )
-                transformed_place[Fields.COORDINATES] = coords
-
-            elif field == Fields.CLOSED_ON:
-                if isinstance(place[Fields.CLOSED_ON], list):
-                    transformed_place[Fields.CLOSED_ON] = ", ".join(
-                        place[Fields.CLOSED_ON]
-                    )
-                else:
-                    transformed_place[Fields.CLOSED_ON] = place[Fields.CLOSED_ON]
-
-            elif field == Fields.HOURS:
-                # Formatting hours
-                hours = "\n".join(
-                    [
-                        f"{day['day']}: {', '.join(day['times'])}"
-                        for day in place["hours"]
-                    ]
-                )
-                transformed_place[Fields.HOURS] = unicode_to_ascii(hours)
-
-            elif field == Fields.DETAILED_ADDRESS:
-                # Adding detailed address
-                address = place.get(Fields.DETAILED_ADDRESS, {})
-                for key in address.keys():
-                    transformed_place[f"address_{key}"] = address.get(key)
-
-            elif field == Fields.ABOUT:
-                # Add transformed about data
-                transformed_about = transform_about(place[Fields.ABOUT])
-                transformed_place.update(transformed_about)
-            elif field == Fields.STATUS:
-                transformed_place[Fields.STATUS] = place[Fields.STATUS]
-
-            elif field in [
-                Fields.DETAILED_REVIEWS,
-                Fields.IMAGES,
-                Fields.FEATURED_REVIEWS,
-            ]:
-                pass
-            else:
-                # Adding other fields directly
-                if field in place:
-                    transformed_place[field] = place[field]
+        # Remove detailed reviews for only save places in places file
+        transformed_place.pop(Fields.DETAILED_REVIEWS)
 
         transformed_places.append(transformed_place)
 
     return transformed_places
 
-def upload_parquet_to_gcs(data, bucket_name, dest_blob_name) -> None:
+def upload_df_to_gcs(data, bucket_name, dest_blob_name, file_format='parquet') -> None:
     """
     Uploads a parquet file to a bucket.
 
@@ -283,19 +166,28 @@ def upload_parquet_to_gcs(data, bucket_name, dest_blob_name) -> None:
         data: The data to upload.
         bucket_name: The name of the bucket to upload to.
         destination_blob_name: The name of the blob to upload to.
+        file_format: The file format to use. Default is 'parquet'. Can be 'parquet' or 'jsonl'.
     """
     df = pd.DataFrame(data)
 
-    parquet_buffer = io.BytesIO()
-    df.to_parquet(parquet_buffer, index=False)
+    if file_format == 'parquet':
+        buffer = io.BytesIO()
+        df.to_parquet(buffer, index=False)
+        content_type = 'application/octet-stream'
+    elif file_format == 'jsonl':
+        buffer = io.StringIO()
+        df.to_json(buffer, orient='records', lines=True)
+        content_type = 'application/jsonl'
+    else:
+        raise ValueError("Unsupported file format. Use 'parquet' or 'jsonl'.")
 
     bucket = STORAGE_CLIENT.bucket(bucket_name)
     blob = bucket.blob(dest_blob_name)
 
-    parquet_buffer.seek(0)
+    buffer.seek(0)
 
-    blob.upload_from_file(parquet_buffer, content_type='application/octet-stream')
-    print(f"File uploaded to {dest_blob_name} in bucket {bucket_name}.")
+    blob.upload_from_file(buffer, content_type=content_type)
+    # print(f"File uploaded to {dest_blob_name} in bucket {bucket_name}.")
 
 def create_places_csv(path, places, fields):
     data = transform_places(places, fields)
@@ -468,30 +360,30 @@ def create(bucket_name, blob_name, places, selected_fields):
 
     if can_create_places_csv(selected_fields):
         # 1. Create places.parquet
-        places_path_parquet = os.path.join(blob_name, "places", f"{current_date}.parquet")
+        places_path_parquet = os.path.join(blob_name, "places", f"{current_date}.jsonl")
         written.append(places_path_parquet)
         data = transform_places(places, selected_fields)
-        upload_parquet_to_gcs(data, bucket_name, places_path_parquet)
+        upload_df_to_gcs(data, bucket_name, places_path_parquet, file_format='jsonl')
 
         # 2. Create detailed-reviews.parquet
         detailed_reviews_path = os.path.join(blob_name, "detailed-reviews", f"{current_date}.parquet")
         written.append(detailed_reviews_path)
         data = transform_detailed_reviews(places)
-        upload_parquet_to_gcs(data, bucket_name, detailed_reviews_path)
+        upload_df_to_gcs(data, bucket_name, detailed_reviews_path)
 
     # 3. Create featured-reviews.parquet
     if can_create_featured_reviews_csv(selected_fields):
         new_var1 = os.path.join(blob_name, "featured-reviews", f"{current_date}.parquet")
         written.append(new_var1)
         data = transform_featured_reviews_csv(places)
-        upload_parquet_to_gcs(data, bucket_name, new_var1)
+        upload_df_to_gcs(data, bucket_name, new_var1)
 
     # 4. Create images.parquet
     if can_create_images_csv(selected_fields):
         new_var = os.path.join(blob_name, "images", f"{current_date}.parquet")
         written.append(new_var)
         data = transform_images_csv(places, selected_fields)
-        upload_parquet_to_gcs(data, bucket_name, new_var)
+        upload_df_to_gcs(data, bucket_name, new_var)
 
     print_filenames(written)
 
