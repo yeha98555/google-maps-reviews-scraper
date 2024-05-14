@@ -100,7 +100,7 @@ ALL_FIELDS_WITHOUT_SOCIAL_DATA = [
     Fields.NAME,
     Fields.DESCRIPTION,
     Fields.IS_SPENDING_ON_ADS,
-    Fields.COMPETITORS,
+    # Fields.COMPETITORS,
     Fields.REVIEWS,
     Fields.WEBSITE,
     Fields.OWNER,
@@ -133,8 +133,8 @@ ALL_FIELDS_WITHOUT_SOCIAL_DATA = [
     Fields.HOURS,
     Fields.MOST_POPULAR_TIMES,
     Fields.POPULAR_TIMES,
-    Fields.FEATURED_REVIEWS,
-    Fields.DETAILED_REVIEWS,
+    # Fields.FEATURED_REVIEWS,
+    # Fields.DETAILED_REVIEWS,
 ]
 
 
@@ -143,7 +143,7 @@ ALL_FIELDS = [
     Fields.NAME,
     Fields.DESCRIPTION,
     Fields.IS_SPENDING_ON_ADS,
-    Fields.COMPETITORS,
+    # Fields.COMPETITORS,
     Fields.REVIEWS,
     Fields.WEBSITE,
     Fields.EMAILS,
@@ -187,6 +187,6 @@ ALL_FIELDS = [
     Fields.MENU,
     Fields.RESERVATIONS,
     Fields.ORDER_ONLINE_LINKS,
-    Fields.FEATURED_REVIEWS,
-    Fields.DETAILED_REVIEWS,
+    # Fields.FEATURED_REVIEWS,
+    # Fields.DETAILED_REVIEWS,
 ]
