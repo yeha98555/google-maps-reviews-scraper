@@ -220,7 +220,7 @@ class Gmaps:
         scrape_reviews: bool = False,
         reviews_max: Optional[int] = ALL_REVIEWS,
         reviews_sort: str = NEWEST,
-        fields: Optional[Union[str, List[str]]] = DEFAULT_FIELDS,
+        fields: Optional[Union[str, List[str]]] = ALL_FIELDS,
         lang: Optional[str] = None,
         geo_coordinates: Optional[str] = None,
         zoom: Optional[float] = None,
