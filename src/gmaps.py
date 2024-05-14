@@ -88,15 +88,17 @@ def determine_fields(fields, scrape_reviews):
 
     fields = [field for field in fields if field not in ALL_SOCIAL_FIELDS]
 
-    ls = []
-    fs = DEFAULT_FIELDS + [Fields.DETAILED_REVIEWS]
-    for f in fields:
-        if f not in fs:
-            print("Too many fields")
-        else:
-            ls.append(f)
+    print(f"fields: {fields}")
 
-    return ls
+    # ls = []
+    # fs = DEFAULT_FIELDS + [Fields.DETAILED_REVIEWS]
+    # for f in fields:
+    #     if f not in fs:
+    #         print("Too many fields")
+    #     else:
+    #         ls.append(f)
+
+    return fields #ls
 
 
 def process_result(
@@ -257,6 +259,8 @@ class Gmaps:
         fields = determine_fields(fields, scrape_reviews)
 
         for query in queries:
+            print(f"query: {query}")
+
             # 1. Scrape Places
             place_data = create_place_data(
                 query,
