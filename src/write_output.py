@@ -189,14 +189,6 @@ def upload_df_to_gcs(data, bucket_name, dest_blob_name, file_format='parquet') -
     blob.upload_from_file(buffer, content_type=content_type)
     # print(f"File uploaded to {dest_blob_name} in bucket {bucket_name}.")
 
-def create_places_csv(path, places, fields):
-    data = transform_places(places, fields)
-    bt.write_csv(data, path, False)
-
-
-def can_create_detailed_reviews_csv(fields):
-    return Fields.DETAILED_REVIEWS in fields
-
 
 def transform_detailed_reviews(places):
     # Initialize an empty list to hold the transformed reviews
@@ -221,54 +213,6 @@ def transform_detailed_reviews(places):
 
     # Return the list of transformed reviews
     return transformed_reviews
-
-
-def create_detailed_reviews_csv(path, places, fields):
-    data = transform_detailed_reviews(places)
-    bt.write_csv(data, path, False)
-
-
-def can_create_email_phone_details_csv(fields):
-    return Fields.EMAILS in fields or Fields.PHONES in fields
-
-
-def transform_email_phone_details_csv(places):
-    contact_details = []
-
-    for place in places:
-        place_id = place.get(Fields.PLACE_ID)
-        name = place.get(Fields.NAME)
-
-        # Process emails
-        for email in place.get(Fields.EMAILS, []):
-            email_entry = {
-                Fields.PLACE_ID: place_id,
-                "place_name": name,
-                "type": "email",
-                "value": email.get("value"),
-                "number_of_sources": len(email.get("sources", [])),
-                "sources": "\n".join(email.get("sources", [])),
-            }
-            contact_details.append(email_entry)
-
-        # Process phone numbers
-        for phone in place.get(Fields.PHONES, []):
-            phone_entry = {
-                Fields.PLACE_ID: place_id,
-                "place_name": name,
-                "type": "phone",
-                "value": phone.get("value"),
-                "number_of_sources": len(phone.get("sources", [])),
-                "sources": "\n".join(phone.get("sources", [])),
-            }
-            contact_details.append(phone_entry)
-
-    return contact_details
-
-
-def create_email_phone_details_csv(path, places, fields):
-    data = transform_email_phone_details_csv(places)
-    bt.write_csv(data, path, False)
 
 
 def can_create_featured_reviews_csv(fields):
