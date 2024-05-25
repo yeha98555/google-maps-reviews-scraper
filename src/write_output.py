@@ -307,7 +307,7 @@ def create(bucket_name, blob_name, places, selected_fields):
         if os.getenv("ATTRACTION_ID"):
             places_path_parquet = os.path.join(blob_name, "places", f"{current_date}", f"{os.getenv('ATTRACTION_ID')}.jsonl")
         else:
-            places_path_parquet = os.path.join(blob_name, "places", f"{current_date}", f"{os.getenv('ATTRACTION_ID')}.jsonl")
+            places_path_parquet = os.path.join(blob_name, "places", f"{current_date}.jsonl")
         written.append(places_path_parquet)
         data = transform_places(places, selected_fields)
         upload_df_to_gcs(data, bucket_name, places_path_parquet, file_format='jsonl')
@@ -316,7 +316,7 @@ def create(bucket_name, blob_name, places, selected_fields):
         if os.getenv("ATTRACTION_ID"):
             detailed_reviews_path = os.path.join(blob_name, "detailed-reviews", f"{current_date}", f"{os.getenv('ATTRACTION_ID')}.parquet")
         else:
-            detailed_reviews_path = os.path.join(blob_name, "detailed-reviews", f"{current_date}", f"{os.getenv('ATTRACTION_ID')}.parquet")
+            detailed_reviews_path = os.path.join(blob_name, "detailed-reviews", f"{current_date}.parquet")
         written.append(detailed_reviews_path)
         data = transform_detailed_reviews(places)
         upload_df_to_gcs(data, bucket_name, detailed_reviews_path)
@@ -326,7 +326,7 @@ def create(bucket_name, blob_name, places, selected_fields):
     #     if os.getenv("ATTRACTION_ID"):
     #         new_var1 = os.path.join(blob_name, "featured-reviews", f"{current_date}", f"{os.getenv('ATTRACTION_ID')}.parquet")
     #     else:
-    #         new_var1 = os.path.join(blob_name, "featured-reviews", f"{current_date}", f"{os.getenv('ATTRACTION_ID')}.parquet")
+    #         new_var1 = os.path.join(blob_name, "featured-reviews", f"{current_date}.parquet")
     #     written.append(new_var1)
     #     data = transform_featured_reviews_csv(places)
     #     upload_df_to_gcs(data, bucket_name, new_var1)
@@ -336,7 +336,7 @@ def create(bucket_name, blob_name, places, selected_fields):
     #     if os.getenv("ATTRACTION_ID"):
     #         new_var = os.path.join(blob_name, "images", f"{current_date}", f"{os.getenv('ATTRACTION_ID')}.parquet")
     #     else:
-    #         new_var = os.path.join(blob_name, "images", f"{current_date}", f"{os.getenv('ATTRACTION_ID')}.parquet")
+    #         new_var = os.path.join(blob_name, "images", f"{current_date}.parquet")
     #     written.append(new_var)
     #     data = transform_images_csv(places, selected_fields)
     #     upload_df_to_gcs(data, bucket_name, new_var)
