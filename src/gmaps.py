@@ -273,6 +273,11 @@ class Gmaps:
             )
             places_obj = scraper.scrape_places(place_data, cache=use_cache)
 
+            # Check if the places are empty
+            if places_obj["places"] == []:
+                print(f"No places found for query: {query}")
+                continue
+
             result_item = process_result(
                 min_reviews,
                 max_reviews,
