@@ -299,9 +299,11 @@ class Gmaps:
 
             result.append(result_item)
 
-        all_places = sort_places(merge_places(result), sort)
 
-        write_output(bucket_name, blob_name, all_places, fields)
+        if result:
+            all_places = sort_places(merge_places(result), sort)
+
+            write_output(bucket_name, blob_name, all_places, fields)
 
         scraper.scrape_places.close()
         return result
