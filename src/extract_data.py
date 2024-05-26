@@ -4,6 +4,7 @@ from datetime import datetime
 from hashlib import md5
 from src.scraper_utils import create_search_link
 from urllib.parse import urlparse, urlunparse
+import numpy as np
 # from botasaurus import bt
 
 def toiso(date):
@@ -265,7 +266,7 @@ def extract_popular_times(data):
     images = safe_get(data, 6, 84, 0) or []
 
     if not images:
-        return "Not Present"
+        return np.nan #"Not Present"
 
     ls = reorder_popular_times_from_monday_to_sunday(images)
     rs = {}
@@ -452,7 +453,7 @@ def get_data_id(data):
 
 
 def get_reviews_per_rating(data):
-    return {i: safe_get(data, 6, 175, 3, i - 1) for i in range(1, 6)}
+    return {f"rating_{i}": safe_get(data, 6, 175, 3, i - 1) for i in range(1, 6)}
 
 
 def parse(data):
