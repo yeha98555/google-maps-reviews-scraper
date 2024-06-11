@@ -37,6 +37,7 @@ make clean_all
 ### Use in Docker Container
 
 1. Build Docker Image
+
 Before building image, remember to add your params in params.yaml file.
 ```sh
 docker build -t gmaps-scraper .
