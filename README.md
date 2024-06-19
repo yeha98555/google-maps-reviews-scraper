@@ -74,6 +74,8 @@ run_scraper = DockerOperator(
     api_version="auto",
     auto_remove=True,
     environment={
+        "ATTRACTION_ID": attraction_id,
+        "ATTRACTION_NAME": attraction_name,
         "GCS_BUCKET_NAME": "your-bucket-name",
         "GCS_BLOB_NAME": "your-blob-name",
     },
