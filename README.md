@@ -101,6 +101,7 @@ run_scraper = DockerOperator(
 - [x] Pack as Docker Image
 - [x] Run in Airflow
 - [x] Get more detailed Google Maps Places info
+- [ ] Input list or file to docker container
 - [ ] Filter time to get Google Maps Reviews
 - [ ] Refactor Code
 
